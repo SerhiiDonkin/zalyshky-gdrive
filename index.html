@@ -146,6 +146,17 @@
   .qty.low{background:var(--amber-soft);color:var(--amber);}
   .qty.ok{background:var(--green-soft);color:var(--green);}
   .total-col{font-weight:700;}
+  .price-tag{display:block;font-family:'IBM Plex Mono',monospace;font-weight:400;font-size:10px;color:var(--ink-soft);margin-top:2px;}
+
+  /* Заморожена перша колонка (Товар) — лишається видимою під час горизонтальної
+     прокрутки складів, щоб на вузькому екрані не губити, який це товар */
+  thead th:first-child, tbody td:first-child{
+    position:sticky;left:0;z-index:5;
+    box-shadow:2px 0 4px -2px rgba(0,0,0,0.15);
+  }
+  thead th:first-child{background:var(--ink);z-index:15;}
+  tbody td:first-child{background:var(--surface);}
+  tbody tr:hover td:first-child{background:#FBF9F4;}
 
   .empty-state{padding:40px 20px;text-align:center;color:var(--ink-soft);font-size:13.5px;}
 
@@ -168,9 +179,30 @@
   footer{margin-top:26px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--stamp);text-align:center;letter-spacing:.04em;}
 
   @media (max-width:640px){
-    .title-block h1{font-size:24px;}
-    header{flex-direction:column;align-items:flex-start;}
-    .stamp{text-align:left;}
+    .wrap{padding:14px 12px 40px;}
+    .title-block h1{font-size:21px;}
+    .title-block .eyebrow{font-size:9.5px;}
+    header{flex-direction:column;align-items:flex-start;padding-bottom:12px;margin-bottom:14px;}
+    .stamp{text-align:left;font-size:11px;}
+
+    /* лічильники 2×2 замість стиснутих 4 в ряд */
+    .ticker{flex-wrap:wrap;}
+    .ticker .cell{flex:1 1 50%;min-width:0;padding:10px 12px;}
+    .ticker .cell:nth-child(2){border-right:none;}
+    .ticker .cell:nth-child(1),.ticker .cell:nth-child(2){border-bottom:1px solid var(--line);}
+    .ticker .num{font-size:21px;}
+
+    /* більша зона дотику для чіпів-фільтрів і кнопок */
+    .wh-chip, #addMoreBtn, #refreshRemoteBtn, #resetFile{
+      padding:10px 13px;font-size:12.5px;
+    }
+    #searchBox{padding:12px 12px;font-size:16px;} /* 16px — щоб iOS не зумив поле само */
+
+    .table-scroll{max-height:65vh;}
+    table{font-size:12.5px;}
+    tbody td.name-col{min-width:150px;}
+    #dropzone{padding:22px 14px;}
+    #dropzone .dz-title{font-size:15px;}
   }
 </style>
 </head>
@@ -180,6 +212,7 @@
   <header>
     <div class="title-block">
       <p class="eyebrow">Зведена відомість · вантажний журнал</p>
+
       <h1>Залишки на складах</h1>
     </div>
     <div class="stamp">
@@ -581,9 +614,15 @@
   // Ці колонки за замовчуванням вимкнені (але лишаються доступними чіпами) —
   // не критичні для щоденного перегляду залишків, лише захаращують таблицю.
   const DEFAULT_OFF_EXTRAS = ['группа','група','виробник','производитель'];
+  // Підказки для автоматичного пошуку колонки роздрібної ціни — щоб показувати її
+  // окремо для кожного складу (адже вона може відрізнятись між складами), а не
+  // брати значення з першого-ліпшого рядка.
+  const PRICE_HINTS = ['цінароздроб','ценароздроб','роздрібна','розничная','retail'];
+  let priceField = null;
 
   function finish(){
     extraFields = rawFields.filter(f=> f!==colMap.name && f!==colMap.sku && f!==colMap.warehouse && f!==colMap.qty);
+    priceField = extraFields.find(f=> PRICE_HINTS.some(h=> normKey(f).includes(h))) || null;
     if(activeExtraFields.size === 0){
       activeExtraFields = new Set(extraFields.filter(f=> !DEFAULT_OFF_EXTRAS.includes(normKey(f))));
     } else {
@@ -619,10 +658,14 @@
       warehouseSet.add(wh);
       const key = sku ? ('sku::'+sku) : ('name::'+name);
       if(!productMap.has(key)){
-        productMap.set(key, { name, sku, qtyByWh:{}, extras:{} });
+        productMap.set(key, { name, sku, qtyByWh:{}, priceByWh:{}, extras:{} });
       }
       const p = productMap.get(key);
       p.qtyByWh[wh] = round3((p.qtyByWh[wh] || 0) + qty);
+      if(priceField){
+        const priceVal = clean(row[priceField]);
+        if(priceVal) p.priceByWh[wh] = priceVal;
+      }
       if(!p.name && name) p.name = name;
       extraFields.forEach(f=>{
         if(!p.extras[f]){
@@ -742,7 +785,8 @@
         activeWh.forEach(w=>{
           const v = p.qtyByWh[w];
           const display = (v===undefined) ? '—' : v;
-          tds += `<td><span class="qty ${qtyClass(v)}">${display}</span></td>`;
+          const priceHtml = (priceField && p.priceByWh[w]) ? `<span class="price-tag">(${escapeHtml(p.priceByWh[w])})</span>` : '';
+          tds += `<td><span class="qty ${qtyClass(v)}">${display}</span>${priceHtml}</td>`;
         });
         tds += `<td class="total-col"><span class="qty ${qtyClass(p.total)}">${p.total}</span></td>`;
         return `<tr>${tds}</tr>`;
