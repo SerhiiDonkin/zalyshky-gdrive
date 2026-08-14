@@ -318,6 +318,12 @@
   }
   function norm(s){ return (s||'').toString().toLowerCase().trim(); }
   function clean(s){ return (s||'').toString().replace(/"/g, '').trim(); }
+  function round3(n){
+    // Прибирає "хвости" від помилок округлення float (0.1+0.2 -> 0.30000000000000004)
+    // при підсумовуванні дробових кількостей з різних рядків/файлів.
+    if(typeof n !== 'number' || isNaN(n)) return n;
+    return Math.round((n + Number.EPSILON) * 1000) / 1000;
+  }
   function formatMulti(s){
     // Поля на кшталт "Штрихкоды" часто містять кілька значень через кому без пробілу
     // (4820135261772,4820019391076,...) — без пробілу браузер не може перенести рядок.
@@ -602,7 +608,7 @@
         productMap.set(key, { name, sku, qtyByWh:{}, extras:{} });
       }
       const p = productMap.get(key);
-      p.qtyByWh[wh] = (p.qtyByWh[wh] || 0) + qty;
+      p.qtyByWh[wh] = round3((p.qtyByWh[wh] || 0) + qty);
       if(!p.name && name) p.name = name;
       extraFields.forEach(f=>{
         if(!p.extras[f]){
@@ -668,7 +674,7 @@
       if(norm(p.name).includes(q) || norm(p.sku).includes(q)) return true;
       return Object.values(p.extras).some(v=>norm(v).includes(q));
     }).map(p=>{
-      const total = activeWh.reduce((s,w)=> s + (p.qtyByWh[w]||0), 0);
+      const total = round3(activeWh.reduce((s,w)=> s + (p.qtyByWh[w]||0), 0));
       return {...p, total};
     });
 
@@ -724,7 +730,7 @@
 
     document.getElementById('tSkus').textContent = pivot.products.length;
     document.getElementById('tWarehouses').textContent = pivot.warehouses.length;
-    const grandTotal = pivot.products.reduce((s,p)=> s + Object.values(p.qtyByWh).reduce((a,b)=>a+b,0), 0);
+    const grandTotal = round3(pivot.products.reduce((s,p)=> s + Object.values(p.qtyByWh).reduce((a,b)=>a+b,0), 0));
     document.getElementById('tTotal').textContent = grandTotal;
     // "Немає в наявності" тут означає: позиція відсутня (0 або немає рядка) хоча б на
     // одному з поточно увімкнених складів. Рахувати товари з нульовим залишком одразу
