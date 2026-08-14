@@ -596,8 +596,13 @@
     rawRows.forEach(row=>{
       const name = clean(row[colMap.name]);
       if(!name) return;
+      const whRaw = clean(row[colMap.warehouse]);
+      // Пропускаємо рядки-дублі заголовка — коли серед самих даних випадково опинився
+      // повторний рядок з назвами колонок (напр. "Товар" у полі товару, "Склад" у полі
+      // складу). Таке трапляється при склеюванні кількох вкладок/експортів в один файл.
+      if(name === colMap.name && whRaw === colMap.warehouse) return;
       const sku = colMap.sku ? formatMulti(row[colMap.sku]) : '';
-      const wh = clean(row[colMap.warehouse]) || 'Без назви';
+      const wh = whRaw || 'Без назви';
       let qtyRaw = (row[colMap.qty] ?? '0').toString().replace(',', '.').replace(/[^\d.\-]/g,'');
       let qty = parseFloat(qtyRaw);
       if(isNaN(qty)) qty = 0;
