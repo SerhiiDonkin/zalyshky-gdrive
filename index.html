@@ -324,6 +324,15 @@
     if(typeof n !== 'number' || isNaN(n)) return n;
     return Math.round((n + Number.EPSILON) * 1000) / 1000;
   }
+  function toNumber(s){
+    if(s === undefined || s === null || s === '') return null;
+    const str = s.toString().trim();
+    // Багатозначні поля (штрихкоди через ", ") не повинні сприйматись як число —
+    // інакше вони "розберуться" в беззмістовне число замість тексту.
+    if(str.includes(' ')) return null;
+    const v = parseFloat(str.replace(',', '.').replace(/[^\d.\-]/g,''));
+    return isNaN(v) ? null : v;
+  }
   function formatMulti(s){
     // Поля на кшталт "Штрихкоды" часто містять кілька значень через кому без пробілу
     // (4820135261772,4820019391076,...) — без пробілу браузер не може перенести рядок.
@@ -688,7 +697,14 @@
       if(sortState.key === 'name') r = a.name.localeCompare(b.name,'uk');
       else if(sortState.key === 'sku') r = (a.sku||'').localeCompare(b.sku||'','uk');
       else if(sortState.key === 'total') r = a.total - b.total;
-      else if(activeExtras.includes(sortState.key)) r = (a.extras[sortState.key]||'').localeCompare(b.extras[sortState.key]||'','uk');
+      else if(activeExtras.includes(sortState.key)){
+        // Якщо значення в колонці схоже на число (напр. ціна "154.55") — сортуємо як
+        // число, інакше рядки на кшталт "800" опиняються "менше" за "9" за алфавітом.
+        const av = toNumber(a.extras[sortState.key]);
+        const bv = toNumber(b.extras[sortState.key]);
+        if(av !== null && bv !== null) r = av - bv;
+        else r = (a.extras[sortState.key]||'').localeCompare(b.extras[sortState.key]||'','uk');
+      }
       else r = (a.qtyByWh[sortState.key]||0) - (b.qtyByWh[sortState.key]||0);
       return r * sortState.dir;
     });
