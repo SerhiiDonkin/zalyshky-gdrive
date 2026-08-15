@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<title>Залишки — зведена відомість</title>
+<title>Залишки на складах</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -35,29 +35,25 @@
     background-image: radial-gradient(circle at 1px 1px, rgba(30,35,40,0.06) 1px, transparent 0);
     background-size: 22px 22px;
   }
-  .wrap{width:100%;margin:0 auto;padding:28px 32px 60px;}
+  .wrap{width:100%;margin:0 auto;padding:24px 32px 50px;}
 
   header{
-    display:flex;justify-content:space-between;align-items:flex-end;
+    display:flex;justify-content:space-between;align-items:center;
     border-bottom:3px solid var(--ink);
-    padding-bottom:16px;margin-bottom:22px;flex-wrap:wrap;gap:14px;
-  }
-  .title-block .eyebrow{
-    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;
-    text-transform:uppercase;color:var(--stamp);margin:0 0 4px;
+    padding-bottom:14px;margin-bottom:20px;flex-wrap:wrap;gap:12px;
   }
   .title-block h1{
-    font-family:'IBM Plex Sans Condensed',sans-serif;font-weight:700;font-size:34px;
+    font-family:'IBM Plex Sans Condensed',sans-serif;font-weight:700;font-size:32px;
     letter-spacing:.01em;margin:0;text-transform:uppercase;
   }
-  .stamp{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);text-align:right;line-height:1.6;}
+  .stamp{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft);}
   .stamp b{color:var(--ink);font-weight:600;}
 
-  .ticker{display:flex;border:1px solid var(--line);background:var(--surface);margin-bottom:22px;overflow:hidden;flex-wrap:wrap;}
-  .ticker .cell{flex:1;min-width:110px;padding:14px 18px;border-right:1px solid var(--line);}
+  .ticker{display:flex;border:1px solid var(--line);background:var(--surface);margin-bottom:20px;overflow:hidden;flex-wrap:wrap;}
+  .ticker .cell{flex:1;min-width:110px;padding:12px 16px;border-right:1px solid var(--line);}
   .ticker .cell:last-child{border-right:none;}
-  .ticker .num{font-family:'IBM Plex Sans Condensed',sans-serif;font-weight:700;font-size:24px;line-height:1;}
-  .ticker .lbl{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-top:6px;}
+  .ticker .num{font-family:'IBM Plex Sans Condensed',sans-serif;font-weight:700;font-size:23px;line-height:1;}
+  .ticker .lbl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-top:6px;}
 
   /* ---- Пароль / Lock Screen ---- */
   #authModal{
@@ -81,7 +77,7 @@
   .auth-box button:hover{background:#33393f;}
   .auth-error{color:var(--red);font-size:12px;font-family:'IBM Plex Mono',monospace;margin-top:8px;display:none;}
 
-  /* ---- Upload zone ---- */
+  /* ---- Панель завантаження ---- */
   #uploadPanel{
     border:1px solid var(--line);background:var(--surface);margin-bottom:16px;
   }
@@ -98,15 +94,14 @@
 
   #dropzone{
     border:2px dashed var(--line);background:var(--paper);
-    padding:30px 20px;text-align:center;cursor:pointer;
+    padding:24px 20px;text-align:center;cursor:pointer;
     transition:border-color .15s, background .15s;margin-bottom:14px;
   }
   #dropzone.drag{border-color:var(--blue);background:var(--blue-soft);}
-  #dropzone .dz-title{font-family:'IBM Plex Sans Condensed',sans-serif;font-weight:600;font-size:17px;}
-  #dropzone .dz-sub{font-size:13px;color:var(--ink-soft);margin-top:6px;}
+  #dropzone .dz-title{font-family:'IBM Plex Sans Condensed',sans-serif;font-weight:600;font-size:16px;}
   #fileInput{display:none;}
 
-  .upload-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:22px;}
+  .upload-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
   .enc-select{
     font-family:'IBM Plex Mono',monospace;font-size:11.5px;text-transform:uppercase;
     color:var(--ink-soft);display:flex;align-items:center;gap:8px;
@@ -129,44 +124,44 @@
   #addMoreBtn:hover, #refreshRemoteBtn:hover{border-color:var(--ink);}
   #remoteWarning{
     font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--red);
-    background:var(--red-soft);border:1px solid var(--red);padding:10px 14px;margin-bottom:16px;
+    background:var(--red-soft);border:1px solid var(--red);padding:10px 14px;margin-top:14px;
   }
 
   .app{display:none;}
   .app.visible{display:block;}
 
-  .search-row{position:relative;margin-bottom:14px;}
+  .search-row{position:relative;margin-bottom:12px;}
   .search-icon{
     position:absolute;left:14px;top:50%;transform:translateY(-50%);
     font-size:15px;opacity:.55;pointer-events:none;
   }
   #searchBox{
     width:100%;border:1.5px solid var(--ink);background:var(--surface);
-    padding:12px 14px 12px 40px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;outline:none;
+    padding:11px 14px 11px 40px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;outline:none;
     box-shadow:2px 2px 0 var(--line);
   }
   #searchBox:focus{border-color:var(--blue);box-shadow:2px 2px 0 var(--blue-soft);}
   #searchBox::placeholder{color:var(--ink-soft);}
 
-  .controls{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:12px;justify-content:space-between;}
+  .controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:12px;justify-content:space-between;}
   .controls-left{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
   .group-filter{display:flex;align-items:center;gap:8px;}
   .group-filter select{
-    font-family:'IBM Plex Sans',sans-serif;font-size:13px;padding:8px 10px;
-    border:1px solid var(--line);background:var(--surface);color:var(--ink);max-width:260px;
+    font-family:'IBM Plex Sans',sans-serif;font-size:13px;padding:7px 10px;
+    border:1px solid var(--line);background:var(--surface);color:var(--ink);max-width:240px;
   }
 
   /* Фільтр різниці цін */
   .diff-filter-wrap{
     display:inline-flex;align-items:center;gap:6px;background:var(--surface);
-    border:1px solid var(--line);padding:4px 8px;
+    border:1px solid var(--line);padding:3px 8px;
   }
   .diff-filter-wrap input{
-    width:50px;padding:5px;border:1px solid var(--line);font-family:'IBM Plex Mono',monospace;
+    width:48px;padding:4px;border:1px solid var(--line);font-family:'IBM Plex Mono',monospace;
     font-size:13px;text-align:center;outline:none;
   }
   .diff-filter-wrap button{
-    font-family:'IBM Plex Mono',monospace;font-size:11.5px;padding:6px 10px;
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;padding:5px 9px;
     border:1px solid var(--line);background:var(--paper);cursor:pointer;
   }
   .diff-filter-wrap button.active{
@@ -175,42 +170,42 @@
 
   #resetFile{
     font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-soft);
-    background:none;border:1px solid var(--line);padding:9px 12px;cursor:pointer;
+    background:none;border:1px solid var(--line);padding:7px 12px;cursor:pointer;
   }
   #resetFile:hover{border-color:var(--ink);color:var(--ink);}
 
-  .toggle-group{margin-bottom:10px;}
+  .toggle-group{margin-bottom:8px;}
   .toggle-group .tg-label{
     font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;
-    text-transform:uppercase;color:var(--stamp);margin-bottom:6px;
+    text-transform:uppercase;color:var(--stamp);margin-bottom:5px;
   }
   .wh-toggle{display:flex;gap:6px;flex-wrap:wrap;}
   .wh-chip{
     font-family:'IBM Plex Mono',monospace;font-size:11.5px;border:1px solid var(--line);
-    background:var(--surface);padding:7px 11px;cursor:pointer;user-select:none;color:var(--ink-soft);
+    background:var(--surface);padding:6px 10px;cursor:pointer;user-select:none;color:var(--ink-soft);
   }
   .wh-chip.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
 
   .table-scroll{
     background:var(--surface);border:1px solid var(--line);
-    overflow:auto;margin-top:16px;
+    overflow:auto;margin-top:14px;
     max-height:72vh;
   }
-  table{border-collapse:collapse;width:100%;font-size:13.5px;}
+  table{border-collapse:collapse;width:100%;font-size:13px;}
   thead th{
     position:sticky;top:0;background:var(--ink);color:var(--paper);
     font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
-    text-align:left;padding:10px 12px;white-space:nowrap;cursor:pointer;
+    text-align:left;padding:9px 11px;white-space:nowrap;cursor:pointer;
   }
   thead th.num-col{text-align:right;}
   thead th:hover{background:#33393f;}
   thead th .arrow{opacity:.5;margin-left:4px;font-size:9px;}
-  tbody td{padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap;}
-  tbody td.name-col{font-weight:500;white-space:normal;min-width:220px;}
-  tbody td.sku-col{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);}
-  tbody td.extra-col{font-size:12.5px;color:var(--ink-soft);white-space:normal;max-width:180px;overflow-wrap:anywhere;word-break:break-word;line-height:1.5;}
+  tbody td{padding:8px 11px;border-bottom:1px solid var(--line);white-space:nowrap;}
+  tbody td.name-col{font-weight:500;white-space:normal;min-width:230px;}
+  tbody td.sku-col{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-soft);}
+  tbody td.extra-col{font-size:12px;color:var(--ink-soft);white-space:normal;max-width:180px;overflow-wrap:anywhere;word-break:break-word;line-height:1.4;}
   tbody tr:hover td{background:#FBF9F4;}
-  .qty{display:inline-block;min-width:38px;text-align:center;padding:3px 8px;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:12.5px;}
+  .qty{display:inline-block;min-width:36px;text-align:center;padding:2px 7px;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:12px;}
   .qty.zero{background:var(--red-soft);color:var(--red);}
   .qty.low{background:var(--amber-soft);color:var(--amber);}
   .qty.ok{background:var(--green-soft);color:var(--green);}
@@ -225,82 +220,62 @@
   tbody td:first-child{background:var(--surface);}
   tbody tr:hover td:first-child{background:#FBF9F4;}
 
-  .empty-state{padding:40px 20px;text-align:center;color:var(--ink-soft);font-size:13.5px;}
+  .empty-state{padding:36px 20px;text-align:center;color:var(--ink-soft);font-size:13.5px;}
 
   /* ---- Картковий вигляд (мобільний) ---- */
-  .card-sort-row{display:none;align-items:center;gap:8px;margin-bottom:14px;}
+  .card-sort-row{display:none;align-items:center;gap:8px;margin-bottom:12px;}
   .card-sort-row .cs-label{
     font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;color:var(--ink-soft);
     flex-shrink:0;
   }
   .card-sort-row select{
-    flex:1;padding:10px 10px;border:1px solid var(--line);background:var(--surface);
-    font-family:'IBM Plex Sans',sans-serif;font-size:14px;color:var(--ink);
+    flex:1;padding:8px;border:1px solid var(--line);background:var(--surface);
+    font-family:'IBM Plex Sans',sans-serif;font-size:13.5px;color:var(--ink);
   }
   .card-sort-row button{
-    font-family:'IBM Plex Mono',monospace;font-size:15px;border:1px solid var(--line);
-    background:var(--surface);padding:10px 14px;cursor:pointer;color:var(--ink);
+    font-family:'IBM Plex Mono',monospace;font-size:14px;border:1px solid var(--line);
+    background:var(--surface);padding:8px 12px;cursor:pointer;color:var(--ink);
   }
 
   .card-list{display:none;}
   .stock-card{
-    background:var(--surface);border:1px solid var(--line);padding:14px 16px;margin-bottom:10px;
+    background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin-bottom:8px;
   }
-  .stock-card-name{font-weight:600;font-size:15px;line-height:1.35;margin-bottom:2px;}
+  .stock-card-name{font-weight:600;font-size:14.5px;line-height:1.3;margin-bottom:3px;}
   .stock-card-meta{
-    font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);margin-bottom:10px;
-    display:flex;flex-wrap:wrap;gap:4px 12px;
+    font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);margin-bottom:8px;
+    display:flex;flex-wrap:wrap;gap:3px 10px;
   }
-  .stock-card-wh-list{border-top:1px solid var(--line);padding-top:8px;}
+  .stock-card-wh-list{border-top:1px solid var(--line);padding-top:6px;}
   .stock-card-wh-row{
     display:flex;justify-content:space-between;align-items:center;
-    padding:6px 0;font-size:13.5px;
+    padding:5px 0;font-size:13px;
   }
-  .stock-card-wh-row .wh-name{color:var(--ink-soft);flex:1;padding-right:10px;}
+  .stock-card-wh-row .wh-name{color:var(--ink-soft);flex:1;padding-right:8px;}
   .stock-card-wh-row .price-tag{margin-top:0;margin-left:6px;display:inline;}
   .stock-card-total{
     display:flex;justify-content:space-between;align-items:center;
-    border-top:1px solid var(--ink);margin-top:6px;padding-top:8px;font-weight:700;font-size:14px;
+    border-top:1px solid var(--ink);margin-top:6px;padding-top:6px;font-weight:700;font-size:13.5px;
   }
-
-  #mapper{background:var(--surface);border:1px solid var(--line);padding:20px;margin-bottom:22px;display:none;}
-  #mapper.visible{display:block;}
-  #mapper h3{font-family:'IBM Plex Sans Condensed',sans-serif;font-size:16px;margin:0 0 4px;}
-  #mapper p{font-size:12.5px;color:var(--ink-soft);margin:0 0 14px;}
-  .map-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-  .map-row label{
-    font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;
-    width:170px;color:var(--ink-soft);flex-shrink:0;
-  }
-  .map-row select{flex:1;padding:7px 9px;border:1px solid var(--line);font-size:13px;background:var(--paper);}
-  #applyMap{
-    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.04em;
-    background:var(--ink);color:var(--paper);border:none;padding:10px 18px;cursor:pointer;
-    margin-top:4px;text-transform:uppercase;
-  }
-
-  footer{margin-top:26px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--stamp);text-align:center;letter-spacing:.04em;}
 
   @media (max-width:640px){
-    .wrap{padding:14px 12px 40px;}
-    .title-block h1{font-size:21px;}
-    .title-block .eyebrow{font-size:9.5px;}
-    header{flex-direction:column;align-items:flex-start;padding-bottom:12px;margin-bottom:14px;}
-    .stamp{text-align:left;font-size:11px;}
+    .wrap{padding:12px 10px 30px;}
+    .title-block h1{font-size:20px;}
+    header{flex-direction:column;align-items:flex-start;padding-bottom:10px;margin-bottom:12px;}
+    .stamp{font-size:11.5px;}
 
     .ticker{flex-wrap:wrap;}
-    .ticker .cell{flex:1 1 50%;min-width:0;padding:10px 12px;}
+    .ticker .cell{flex:1 1 50%;min-width:0;padding:8px 10px;}
     .ticker .cell:nth-child(2){border-right:none;}
     .ticker .cell:nth-child(1),.ticker .cell:nth-child(2){border-bottom:1px solid var(--line);}
-    .ticker .num{font-size:20px;}
+    .ticker .num{font-size:18px;}
 
     .wh-chip, #addMoreBtn, #refreshRemoteBtn, #resetFile{
-      padding:10px 13px;font-size:12.5px;
+      padding:8px 11px;font-size:12px;
     }
-    #searchBox{padding:12px 12px;font-size:16px;}
-
-    #dropzone{padding:22px 14px;}
-    #dropzone .dz-title{font-size:15px;}
+    #searchBox{padding:10px 10px 10px 36px;font-size:15px;}
+    #dropzone{padding:18px 12px;}
+    #dropzone .dz-title{font-size:14px;}
 
     .table-scroll{display:none;}
     .card-list{display:block;}
@@ -315,7 +290,7 @@
   <div class="auth-box">
     <h2>Вхід у систему</h2>
     <p>Введіть пароль для доступу до залишків:</p>
-    <input type="password" id="authPassword" placeholder="Введіть пароль">
+    <input type="password" id="authPassword" placeholder="Пароль">
     <button id="authBtn">Підтвердити</button>
     <div class="auth-error" id="authError">Невірний пароль!</div>
   </div>
@@ -325,50 +300,37 @@
 
   <header>
     <div class="title-block">
-      <p class="eyebrow">Зведена відомість · вантажний журнал</p>
       <h1>Залишки на складах</h1>
     </div>
     <div class="stamp">
-      СТОРІНКА ОНОВЛЕНА: <b id="updatedAt">—</b><br>
-      ФАЙЛІВ ЗАВАНТАЖЕНО: <b id="fileCount">0</b>
+      ОНОВЛЕНО: <b id="updatedAt">—</b>
     </div>
   </header>
 
   <details id="uploadPanel" open>
-    <summary>Завантаження CSV-файлів</summary>
+    <summary>Джерела даних / Завантаження CSV</summary>
     <div class="upload-panel-body">
       <div id="dropzone">
-        <div class="dz-title">Перетягніть один або кілька CSV-файлів сюди, або натисніть, щоб обрати</div>
-        <div class="dz-sub">Обробка повністю у браузері, файли нікуди не завантажуються</div>
+        <div class="dz-title">Перетягніть CSV-файл або натисніть для вибору</div>
         <input type="file" id="fileInput" accept=".csv" multiple>
       </div>
 
       <div class="upload-row">
         <div class="enc-select">
-          Кодування (для локальних файлів):
+          Кодування:
           <select id="encodingSelect">
             <option value="windows-1251" selected>Windows-1251</option>
             <option value="utf-8">UTF-8</option>
           </select>
         </div>
         <div id="fileList"></div>
-        <button id="addMoreBtn" style="display:none;">+ Додати ще файли</button>
+        <button id="addMoreBtn" style="display:none;">+ Додати файли</button>
         <button id="refreshRemoteBtn" style="display:none;">↻ Оновити дані з мережі</button>
       </div>
 
       <div id="remoteWarning" style="display:none;"></div>
     </div>
   </details>
-
-  <div id="mapper">
-    <h3>Перевірте відповідність колонок</h3>
-    <p>Не вдалось однозначно розпізнати структуру файлу — вкажіть, яка колонка за що відповідає.</p>
-    <div class="map-row"><label>Товар</label><select id="mapName"></select></div>
-    <div class="map-row"><label>Ідентифікатор / код</label><select id="mapSku"></select></div>
-    <div class="map-row"><label>Склад</label><select id="mapWarehouse"></select></div>
-    <div class="map-row"><label>Кількість</label><select id="mapQty"></select></div>
-    <button id="applyMap">Застосувати</button>
-  </div>
 
   <div class="app" id="app">
 
@@ -392,7 +354,6 @@
           <select id="groupFilterSelect"></select>
         </div>
 
-        <!-- Фільтр перепаду цін -->
         <div class="diff-filter-wrap" id="diffFilterWrap" title="Показати препарати з різницею цін між складами">
           <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);">РІЗНИЦЯ ЦІН:</span>
           <input type="number" id="diffPercentInput" value="20" min="1" max="500">
@@ -432,23 +393,54 @@
     <div class="empty-state" id="emptyState" style="display:none;">Нічого не знайдено за цим запитом</div>
 
   </div>
-
-  <footer>СТАТИЧНА СТОРІНКА · ЗАХИЩЕНО ПАРОЛЕМ · CSV → БРАУЗЕР</footer>
 </div>
 
 <script>
 (function(){
   // ==========================================================================
-  // НАЛАШТУВАННЯ ПАРОЛЯ
+  // 1. ПАРОЛЬ ДОСТУПУ
   // ==========================================================================
-  const APP_PASSWORD = '1234'; // Змініть на власний надійний пароль
+  const APP_PASSWORD = '110283';
 
+  // ==========================================================================
+  // 2. ЗАМІНА НАЗВ СКЛАДІВ
+  // Впишіть точну назву складу з таблиці зліва, а бажану коротку назву — справа.
+  // ==========================================================================
+  const WAREHOUSE_NAMES = {
+    'Склад Бояны': 'БО',
+    'Склад Динівці': 'ДИ',
+    'Склад Тарасовцы': 'ТА',
+    'Аптека №1 Горбова': 'ГО',
+    'Аптечный пункт №1': 'ГЕ',
+  };
+
+  function getDisplayName(rawWh){
+    if(!rawWh) return 'Без назви';
+    return WAREHOUSE_NAMES[rawWh] || rawWh;
+  }
+
+  // ==========================================================================
+  // 3. ДЖЕРЕЛА GOOGLE ТАБЛИЦЬ
+  // ==========================================================================
   const REMOTE_SOURCES = [
     { label: 'Google Таблиця (всі склади)', url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTExpPCquUsNU9S917JXUemxatRSJFQ4rtihcr9C_BqxQyt0dvInY9kEcvksY4gv8lIBAIgr2R8kdUh/pub?gid=1566953783&single=true&output=csv' },
   ];
   const REMOTE_ENCODING = 'utf-8';
 
-  const BLOCKLIST_RAW = ['сумма','статус','кодтовара','уктзед','рецепт','ценаприход','цінаприхід'];
+  // ==========================================================================
+  // 4. ТОЧНА ФІКСАЦІЯ КОЛОНОК (БЕЗ ВГАДУВАННЯ ТА БЕЗ "Цена")
+  // ==========================================================================
+  const CORE_COLS = {
+    warehouse: 'Склад',
+    name: 'Товар',
+    sku: 'КодМорион',
+    qty: 'Количество',
+    price: 'ЦінаРоздріб'
+  };
+
+  // Дозволені додаткові колонки (все інше відсікається)
+  const ALLOWED_EXTRAS = ['Штрихкоды', 'КодТовара', 'Группа', 'Виробник'];
+  const DEFAULT_OFF_EXTRAS = ['Группа', 'Виробник'];
 
   // Елементи аутентифікації
   const authModal = document.getElementById('authModal');
@@ -456,7 +448,6 @@
   const authBtn = document.getElementById('authBtn');
   const authError = document.getElementById('authError');
 
-  // Перевірка сесії пароля
   let isAuthenticated = sessionStorage.getItem('stock_app_auth') === '1';
 
   function checkAuth(){
@@ -490,7 +481,6 @@
   const dropzone = document.getElementById('dropzone');
   const fileInput = document.getElementById('fileInput');
   const app = document.getElementById('app');
-  const mapper = document.getElementById('mapper');
   const searchBox = document.getElementById('searchBox');
   const whToggle = document.getElementById('whToggle');
   const extraToggle = document.getElementById('extraToggle');
@@ -515,19 +505,14 @@
 
   let loadedFiles = [];
   let rawRows = [];
-  let rawFields = [];
-  let colMap = { name:null, sku:null, warehouse:null, qty:null };
   let extraFields = [];
   let activeExtraFields = new Set();
   let pivot = { products:[], warehouses:[] };
   let activeWarehouses = new Set();
   let sortState = { key:'name', dir:1 };
-  let mapped = false;
   let isDiffFilterActive = false;
+  let activeGroupFilter = '';
 
-  function normKey(s){
-    return (s||'').toString().toLowerCase().replace(/[^а-яїієґa-z0-9]/gi,'');
-  }
   function norm(s){ return (s||'').toString().toLowerCase().trim(); }
   function clean(s){ return (s||'').toString().replace(/"/g, '').trim(); }
   function round2(n){
@@ -558,12 +543,11 @@
     if(!v.includes(',')) return v;
     return v.split(',').map(x=>x.trim()).filter(Boolean).join(', ');
   }
-  function isBlocked(field){ return BLOCKLIST_RAW.includes(normKey(field)); }
   function escapeHtml(s){
     return (s||'').toString().replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
-  // ---- file handling ----
+  // Обробка файлів
   dropzone.addEventListener('click', ()=>fileInput.click());
   dropzone.addEventListener('dragover', e=>{e.preventDefault(); dropzone.classList.add('drag');});
   dropzone.addEventListener('dragleave', ()=>dropzone.classList.remove('drag'));
@@ -582,11 +566,9 @@
   encodingSelect.addEventListener('change', ()=>{ if(loadedFiles.length) processAllFiles(); });
 
   resetFileBtn.addEventListener('click', ()=>{
-    loadedFiles = []; rawRows = []; rawFields = []; mapped = false;
-    colMap = { name:null, sku:null, warehouse:null, qty:null };
+    loadedFiles = []; rawRows = [];
     activeExtraFields = new Set();
     app.classList.remove('visible');
-    mapper.classList.remove('visible');
     dropzone.style.display = 'block';
     addMoreBtn.style.display = 'none';
     renderFileList();
@@ -630,7 +612,6 @@
     fileListEl.querySelectorAll('.rm').forEach(el=>{
       el.addEventListener('click', ()=>removeFile(el.dataset.name));
     });
-    document.getElementById('fileCount').textContent = loadedFiles.length;
   }
 
   function decodeFile(file, encoding){
@@ -656,6 +637,11 @@
 
   const LOCAL_PARSE_OPTS  = { header:true, skipEmptyLines:true, quoteChar:'\u0000' };
   const REMOTE_PARSE_OPTS = { header:true, skipEmptyLines:true };
+
+  // Знаходить ключ у рядку без чутливості до регістру
+  function findColKey(fields, targetName){
+    return fields.find(f => f.trim().toLowerCase() === targetName.toLowerCase()) || null;
+  }
 
   async function processAllFiles(){
     if(!checkAuth()) return;
@@ -705,110 +691,38 @@
     if(remoteErrors.length){
       remoteWarning.style.display = 'block';
       const isLocalFile = location.protocol === 'file:';
-      let msg = 'Не вдалось завантажити частину джерел:<br>' +
+      let msg = 'Не вдалось завантажити дані:<br>' +
         remoteErrors.map(e=>'• ' + escapeHtml(e)).join('<br>');
       if(isLocalFile){
-        msg += '<br><br><b>Ймовірна причина:</b> сторінка відкрита прямо з диска (file://). ' +
-          'Розмістіть HTML-файл на хостингу (GitHub Pages тощо), щоб увімкнути завантаження.';
-      } else {
-        msg += '<br><br>Перевірте, що посилання опубліковане саме як CSV і доступне "будь-кому за посиланням".';
+        msg += '<br><br><b>Ймовірна причина:</b> файл відкрито як file://. Розмістіть HTML на хостингу для автозавантаження.';
       }
       remoteWarning.innerHTML = msg;
     } else {
       remoteWarning.style.display = 'none';
     }
 
-    if(!allRows.length){
-      if(!remoteErrors.length){
-        alert('Не вдалось прочитати рядки з обраних джерел. Перевірте кодування або роздільник.');
-      }
-      return;
-    }
+    if(!allRows.length) return;
+
     rawRows = allRows;
-    rawFields = fieldSet.filter(f=>!isBlocked(f));
-
-    if(!mapped){
-      const guess = guessColumns(rawFields);
-      if(guess.name && guess.warehouse && guess.qty){
-        colMap = guess;
-        mapped = true;
-        finish();
-      } else {
-        showMapper(guess);
-      }
-    } else {
-      if(rawFields.includes(colMap.name) && rawFields.includes(colMap.warehouse) && rawFields.includes(colMap.qty)){
-        finish();
-      } else {
-        mapped = false;
-        const guess = guessColumns(rawFields);
-        showMapper(guess);
-      }
-    }
-  }
-
-  function guessColumns(fields){
-    const g = { name:null, sku:null, warehouse:null, qty:null };
-    const nameHints = ['товар','назва','найменування','номенклатура','product','name'];
-    const skuHints = ['кодморион','морион','vendorcode','sku','vendor'];
-    const whHints = ['склад','точка','магазин','локація','warehouse','location','store'];
-    const qtyHints = ['кількість','залишок','залишки','остаток','количество','кол-во','qty','quantity','stock'];
-    fields.forEach(f=>{
-      const n = normKey(f);
-      if(!g.name && nameHints.some(h=>n.includes(normKey(h)))) g.name = f;
-      else if(!g.sku && skuHints.some(h=>n.includes(normKey(h)))) g.sku = f;
-      else if(!g.warehouse && whHints.some(h=>n.includes(normKey(h)))) g.warehouse = f;
-      else if(!g.qty && qtyHints.some(h=>n.includes(normKey(h)))) g.qty = f;
-    });
-    return g;
-  }
-
-  function showMapper(guess){
-    ['mapName','mapSku','mapWarehouse','mapQty'].forEach(id=>{
-      const sel = document.getElementById(id);
-      sel.innerHTML = '<option value="">—</option>' +
-        rawFields.map(f=>`<option value="${escapeHtml(f)}">${escapeHtml(f)}</option>`).join('');
-    });
-    if(guess.name) document.getElementById('mapName').value = guess.name;
-    if(guess.sku) document.getElementById('mapSku').value = guess.sku;
-    if(guess.warehouse) document.getElementById('mapWarehouse').value = guess.warehouse;
-    if(guess.qty) document.getElementById('mapQty').value = guess.qty;
-    mapper.classList.add('visible');
-    app.classList.remove('visible');
-  }
-
-  document.getElementById('applyMap').addEventListener('click', ()=>{
-    colMap = {
-      name: document.getElementById('mapName').value || null,
-      sku: document.getElementById('mapSku').value || null,
-      warehouse: document.getElementById('mapWarehouse').value || null,
-      qty: document.getElementById('mapQty').value || null
+    
+    // Визначаємо точні назви колонок у файлі
+    actualCols = {
+      warehouse: findColKey(fieldSet, CORE_COLS.warehouse) || CORE_COLS.warehouse,
+      name: findColKey(fieldSet, CORE_COLS.name) || CORE_COLS.name,
+      sku: findColKey(fieldSet, CORE_COLS.sku) || CORE_COLS.sku,
+      qty: findColKey(fieldSet, CORE_COLS.qty) || CORE_COLS.qty,
+      price: findColKey(fieldSet, CORE_COLS.price) || CORE_COLS.price
     };
-    if(!colMap.name || !colMap.warehouse || !colMap.qty){
-      alert('Потрібно вказати щонайменше: Товар, Склад, Кількість.');
-      return;
-    }
-    mapped = true;
-    mapper.classList.remove('visible');
-    finish();
-  });
 
-  const DEFAULT_OFF_EXTRAS = ['группа','група','виробник','производитель'];
-  const PRICE_HINTS = ['цінароздріб','ценароздроб','роздрібна','розничная','retail','ціна','цена'];
-  let priceField = null;
-  const GROUP_HINTS = ['группа','група','категория','категорія','group'];
-  let groupField = null;
-  let activeGroupFilter = '';
+    // Фільтруємо додаткові поля тільки зі списку дозволених
+    extraFields = ALLOWED_EXTRAS
+      .map(ext => findColKey(fieldSet, ext))
+      .filter(Boolean);
 
-  function finish(){
-    extraFields = rawFields.filter(f=> f!==colMap.name && f!==colMap.sku && f!==colMap.warehouse && f!==colMap.qty);
-    priceField = extraFields.find(f=> PRICE_HINTS.some(h=> normKey(f).includes(h))) || null;
-    groupField = extraFields.find(f=> GROUP_HINTS.some(h=> normKey(f).includes(h))) || null;
     if(activeExtraFields.size === 0){
-      activeExtraFields = new Set(extraFields.filter(f=> !DEFAULT_OFF_EXTRAS.includes(normKey(f))));
-    } else {
-      activeExtraFields = new Set(Array.from(activeExtraFields).filter(f=>extraFields.includes(f)));
+      activeExtraFields = new Set(extraFields.filter(f => !DEFAULT_OFF_EXTRAS.map(x=>x.toLowerCase()).includes(f.toLowerCase())));
     }
+
     buildPivot();
     app.classList.add('visible');
     document.getElementById('updatedAt').textContent =
@@ -820,18 +734,21 @@
     render();
   }
 
+  let actualCols = { ...CORE_COLS };
+
   function buildPivot(){
     const productMap = new Map();
     const warehouseSet = new Set();
 
     rawRows.forEach(row=>{
-      const name = clean(row[colMap.name]);
+      const name = clean(row[actualCols.name]);
       if(!name) return;
-      const whRaw = clean(row[colMap.warehouse]);
-      if(name === colMap.name && whRaw === colMap.warehouse) return;
-      const sku = colMap.sku ? formatMulti(row[colMap.sku]) : '';
-      const wh = whRaw || 'Без назви';
-      let qtyRaw = (row[colMap.qty] ?? '0').toString().replace(',', '.').replace(/[^\d.\-]/g,'');
+      const rawWh = clean(row[actualCols.warehouse]);
+      if(name === actualCols.name && rawWh === actualCols.warehouse) return;
+      
+      const wh = getDisplayName(rawWh);
+      const sku = actualCols.sku ? formatMulti(row[actualCols.sku]) : '';
+      let qtyRaw = (row[actualCols.qty] ?? '0').toString().replace(',', '.').replace(/[^\d.\-]/g,'');
       let qty = parseFloat(qtyRaw);
       if(isNaN(qty)) qty = 0;
 
@@ -842,8 +759,10 @@
       }
       const p = productMap.get(key);
       p.qtyByWh[wh] = round3((p.qtyByWh[wh] || 0) + qty);
-      if(priceField){
-        const priceVal = clean(row[priceField]);
+
+      // Ціна береться суворо з колонки ЦінаРоздріб
+      if(actualCols.price){
+        const priceVal = clean(row[actualCols.price]);
         if(priceVal) p.priceByWh[wh] = priceVal;
       }
       if(!p.name && name) p.name = name;
@@ -893,9 +812,10 @@
   }
 
   function renderGroupFilter(){
-    if(!groupField){ groupFilterWrap.style.display = 'none'; return; }
+    const groupFieldKey = extraFields.find(f => f.toLowerCase() === 'группа' || f.toLowerCase() === 'група');
+    if(!groupFieldKey){ groupFilterWrap.style.display = 'none'; return; }
     const values = Array.from(new Set(
-      pivot.products.map(p=>p.extras[groupField]).filter(Boolean)
+      pivot.products.map(p=>p.extras[groupFieldKey]).filter(Boolean)
     )).sort((a,b)=>a.localeCompare(b,'uk'));
     if(!values.length){ groupFilterWrap.style.display = 'none'; return; }
     groupFilterWrap.style.display = 'flex';
@@ -932,9 +852,10 @@
     const activeExtras = extraFields.filter(f=>activeExtraFields.has(f));
     const q = norm(searchBox.value);
     const targetDiffPercent = parseFloat(diffPercentInput.value) || 0;
+    const groupFieldKey = extraFields.find(f => f.toLowerCase() === 'группа' || f.toLowerCase() === 'група');
 
     let rows = pivot.products.filter(p=>{
-      if(groupField && activeGroupFilter && p.extras[groupField] !== activeGroupFilter) return false;
+      if(groupFieldKey && activeGroupFilter && p.extras[groupFieldKey] !== activeGroupFilter) return false;
       if(q){
         const matchName = norm(p.name).includes(q);
         const matchSku = norm(p.sku).includes(q);
@@ -942,13 +863,13 @@
         if(!matchName && !matchSku && !matchExtras) return false;
       }
 
-      // Розрахунок різниці цін між складами
-      if(isDiffFilterActive && priceField){
+      // Фільтр перепаду роздрібних цін між складами
+      if(isDiffFilterActive && actualCols.price){
         const prices = activeWh
           .map(w => parsePrice(p.priceByWh[w]))
           .filter(pr => pr > 0);
 
-        if(prices.length < 2) return false; // Потрібно хоча б 2 склади з цінами
+        if(prices.length < 2) return false;
         const minP = Math.min(...prices);
         const maxP = Math.max(...prices);
         if(minP <= 0) return false;
@@ -960,19 +881,18 @@
     }).map(p=>{
       const total = round3(activeWh.reduce((s,w)=> s + (p.qtyByWh[w]||0), 0));
       
-      // Розрахунок загальної суми вартості по всіх складах
       let totalSum = 0;
       activeWh.forEach(w=>{
-        const q = p.qtyByWh[w] || 0;
+        const qVal = p.qtyByWh[w] || 0;
         const price = parsePrice(p.priceByWh[w]);
-        totalSum += (q * price);
+        totalSum += (qVal * price);
       });
       totalSum = round2(totalSum);
 
       return {...p, total, totalSum};
     });
 
-    const validSortKeys = new Set(['name','total','totalSum', ...(colMap.sku?['sku']:[]), ...activeExtras, ...activeWh]);
+    const validSortKeys = new Set(['name','total','totalSum', ...(actualCols.sku?['sku']:[]), ...activeExtras, ...activeWh]);
     if(!validSortKeys.has(sortState.key)) sortState.key = 'name';
 
     rows.sort((a,b)=>{
@@ -991,9 +911,9 @@
       return r * sortState.dir;
     });
 
-    // Формування заголовків таблиці
+    // Формування шапки таблиці
     let headHtml = `<th data-key="name">Товар <span class="arrow">${arrow('name')}</span></th>`;
-    if(colMap.sku) headHtml += `<th data-key="sku">Код <span class="arrow">${arrow('sku')}</span></th>`;
+    if(actualCols.sku) headHtml += `<th data-key="sku">Код <span class="arrow">${arrow('sku')}</span></th>`;
     activeExtras.forEach(f=>{
       headHtml += `<th data-key="${escapeHtml(f)}">${escapeHtml(f)} <span class="arrow">${arrow(f)}</span></th>`;
     });
@@ -1021,14 +941,14 @@
       emptyState.style.display = 'none';
       tableBody.innerHTML = rows.map(p=>{
         let tds = `<td class="name-col">${escapeHtml(p.name)}</td>`;
-        if(colMap.sku) tds += `<td class="sku-col">${escapeHtml(p.sku)}</td>`;
+        if(actualCols.sku) tds += `<td class="sku-col">${escapeHtml(p.sku)}</td>`;
         activeExtras.forEach(f=>{
           tds += `<td class="extra-col">${escapeHtml(p.extras[f]||'—')}</td>`;
         });
         activeWh.forEach(w=>{
           const v = p.qtyByWh[w];
           const display = (v===undefined) ? '—' : v;
-          const priceHtml = (priceField && p.priceByWh[w]) ? `<span class="price-tag">(${escapeHtml(p.priceByWh[w])} ₴)</span>` : '';
+          const priceHtml = (actualCols.price && p.priceByWh[w]) ? `<span class="price-tag">(${escapeHtml(p.priceByWh[w])} ₴)</span>` : '';
           tds += `<td><span class="qty ${qtyClass(v)}">${display}</span>${priceHtml}</td>`;
         });
         tds += `<td class="total-col"><span class="qty ${qtyClass(p.total)}">${p.total}</span></td>`;
@@ -1036,10 +956,10 @@
         return `<tr>${tds}</tr>`;
       }).join('');
 
-      // Картковий вигляд (мобільні екрани)
+      // Картковий вигляд для мобільних екранів
       cardList.innerHTML = rows.map(p=>{
         let metaHtml = '';
-        if(colMap.sku) metaHtml += `<span>Код: ${escapeHtml(p.sku)}</span>`;
+        if(actualCols.sku) metaHtml += `<span>Код: ${escapeHtml(p.sku)}</span>`;
         activeExtras.forEach(f=>{
           if(p.extras[f]) metaHtml += `<span>${escapeHtml(f)}: ${escapeHtml(p.extras[f])}</span>`;
         });
@@ -1047,7 +967,7 @@
         const whRowsHtml = activeWh.map(w=>{
           const v = p.qtyByWh[w];
           const display = (v===undefined) ? '—' : v;
-          const priceHtml = (priceField && p.priceByWh[w]) ? `<span class="price-tag">(${escapeHtml(p.priceByWh[w])} ₴)</span>` : '';
+          const priceHtml = (actualCols.price && p.priceByWh[w]) ? `<span class="price-tag">(${escapeHtml(p.priceByWh[w])} ₴)</span>` : '';
           return `<div class="stock-card-wh-row">
             <span class="wh-name">${escapeHtml(w)}</span>
             <span><span class="qty ${qtyClass(v)}">${display}</span>${priceHtml}</span>
@@ -1066,9 +986,8 @@
       }).join('');
     }
 
-    // Оновлення сортувальника в мобільному режимі
     const sortOptions = [{key:'name', label:'Назва'}];
-    if(colMap.sku) sortOptions.push({key:'sku', label:'Код'});
+    if(actualCols.sku) sortOptions.push({key:'sku', label:'Код'});
     activeExtras.forEach(f=> sortOptions.push({key:f, label:f}));
     activeWh.forEach(w=> sortOptions.push({key:w, label:'Склад: ' + w}));
     sortOptions.push({key:'total', label:'Разом (кількість)'});
@@ -1097,7 +1016,6 @@
     return sortState.dir === 1 ? '↑' : '↓';
   }
 
-  // Перевірка паролю на старті
   if(checkAuth() && REMOTE_SOURCES.length){
     processAllFiles();
   }
