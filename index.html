@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
 <title>Залишки — зведена відомість</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -55,11 +56,32 @@
   .ticker{display:flex;border:1px solid var(--line);background:var(--surface);margin-bottom:22px;overflow:hidden;flex-wrap:wrap;}
   .ticker .cell{flex:1;min-width:110px;padding:14px 18px;border-right:1px solid var(--line);}
   .ticker .cell:last-child{border-right:none;}
-  .ticker .num{font-family:'IBM Plex Sans Condensed',sans-serif;font-weight:700;font-size:26px;line-height:1;}
+  .ticker .num{font-family:'IBM Plex Sans Condensed',sans-serif;font-weight:700;font-size:24px;line-height:1;}
   .ticker .lbl{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-top:6px;}
 
+  /* ---- Пароль / Lock Screen ---- */
+  #authModal{
+    position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(30,35,40,0.85);
+    display:flex;justify-content:center;align-items:center;z-index:9999;backdrop-filter:blur(3px);
+  }
+  .auth-box{
+    background:var(--paper);border:2px solid var(--ink);padding:30px;width:100%;max-width:360px;
+    box-shadow:6px 6px 0 var(--ink);text-align:center;
+  }
+  .auth-box h2{font-family:'IBM Plex Sans Condensed',sans-serif;font-size:22px;margin:0 0 8px;text-transform:uppercase;}
+  .auth-box p{font-size:13px;color:var(--ink-soft);margin:0 0 16px;}
+  .auth-box input{
+    width:100%;padding:10px 12px;font-family:'IBM Plex Mono',monospace;font-size:16px;
+    border:1.5px solid var(--ink);background:var(--surface);margin-bottom:12px;outline:none;text-align:center;
+  }
+  .auth-box button{
+    width:100%;padding:10px;font-family:'IBM Plex Mono',monospace;font-size:13px;
+    background:var(--ink);color:var(--paper);border:none;cursor:pointer;text-transform:uppercase;font-weight:600;
+  }
+  .auth-box button:hover{background:#33393f;}
+  .auth-error{color:var(--red);font-size:12px;font-family:'IBM Plex Mono',monospace;margin-top:8px;display:none;}
+
   /* ---- Upload zone ---- */
-  /* ---- Панель завантаження (details/summary — згортається нативно) ---- */
   #uploadPanel{
     border:1px solid var(--line);background:var(--surface);margin-bottom:16px;
   }
@@ -113,10 +135,7 @@
   .app{display:none;}
   .app.visible{display:block;}
 
-  /* Пошук — окремий, візуально виразний рядок (щоб не зливався з кнопками/чіпами) */
-  .search-row{
-    position:relative;margin-bottom:14px;
-  }
+  .search-row{position:relative;margin-bottom:14px;}
   .search-icon{
     position:absolute;left:14px;top:50%;transform:translateY(-50%);
     font-size:15px;opacity:.55;pointer-events:none;
@@ -130,11 +149,30 @@
   #searchBox::placeholder{color:var(--ink-soft);}
 
   .controls{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:12px;justify-content:space-between;}
+  .controls-left{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
   .group-filter{display:flex;align-items:center;gap:8px;}
   .group-filter select{
     font-family:'IBM Plex Sans',sans-serif;font-size:13px;padding:8px 10px;
-    border:1px solid var(--line);background:var(--surface);color:var(--ink);max-width:280px;
+    border:1px solid var(--line);background:var(--surface);color:var(--ink);max-width:260px;
   }
+
+  /* Фільтр різниці цін */
+  .diff-filter-wrap{
+    display:inline-flex;align-items:center;gap:6px;background:var(--surface);
+    border:1px solid var(--line);padding:4px 8px;
+  }
+  .diff-filter-wrap input{
+    width:50px;padding:5px;border:1px solid var(--line);font-family:'IBM Plex Mono',monospace;
+    font-size:13px;text-align:center;outline:none;
+  }
+  .diff-filter-wrap button{
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;padding:6px 10px;
+    border:1px solid var(--line);background:var(--paper);cursor:pointer;
+  }
+  .diff-filter-wrap button.active{
+    background:var(--amber);color:#fff;border-color:var(--amber);font-weight:600;
+  }
+
   #resetFile{
     font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-soft);
     background:none;border:1px solid var(--line);padding:9px 12px;cursor:pointer;
@@ -156,7 +194,7 @@
   .table-scroll{
     background:var(--surface);border:1px solid var(--line);
     overflow:auto;margin-top:16px;
-    max-height:72vh; /* власна прокручувана панель — і шапка колонок лишається приклеєною зверху неї */
+    max-height:72vh;
   }
   table{border-collapse:collapse;width:100%;font-size:13.5px;}
   thead th{
@@ -176,11 +214,9 @@
   .qty.zero{background:var(--red-soft);color:var(--red);}
   .qty.low{background:var(--amber-soft);color:var(--amber);}
   .qty.ok{background:var(--green-soft);color:var(--green);}
-  .total-col{font-weight:700;}
+  .total-col, .sum-col{font-weight:700;}
   .price-tag{display:block;font-family:'IBM Plex Mono',monospace;font-weight:400;font-size:10px;color:var(--ink-soft);margin-top:2px;}
 
-  /* Заморожена перша колонка (Товар) — лишається видимою під час горизонтальної
-     прокрутки складів, щоб на вузькому екрані не губити, який це товар */
   thead th:first-child, tbody td:first-child{
     position:sticky;left:0;z-index:5;
     box-shadow:2px 0 4px -2px rgba(0,0,0,0.15);
@@ -252,25 +288,20 @@
     header{flex-direction:column;align-items:flex-start;padding-bottom:12px;margin-bottom:14px;}
     .stamp{text-align:left;font-size:11px;}
 
-    /* лічильники 2×2 замість стиснутих 4 в ряд */
     .ticker{flex-wrap:wrap;}
     .ticker .cell{flex:1 1 50%;min-width:0;padding:10px 12px;}
     .ticker .cell:nth-child(2){border-right:none;}
     .ticker .cell:nth-child(1),.ticker .cell:nth-child(2){border-bottom:1px solid var(--line);}
-    .ticker .num{font-size:21px;}
+    .ticker .num{font-size:20px;}
 
-    /* більша зона дотику для чіпів-фільтрів і кнопок */
     .wh-chip, #addMoreBtn, #refreshRemoteBtn, #resetFile{
       padding:10px 13px;font-size:12.5px;
     }
-    #searchBox{padding:12px 12px;font-size:16px;} /* 16px — щоб iOS не зумив поле само */
+    #searchBox{padding:12px 12px;font-size:16px;}
 
     #dropzone{padding:22px 14px;}
     #dropzone .dz-title{font-size:15px;}
 
-    /* Головна зміна: замість вузької таблиці з "20% екрану на дані" — повноширинні
-       картки. Таблиця ховається повністю, показуються картки + окремий сортувальник,
-       бо в картках немає заголовків стовпців, по яких можна клікнути для сортування. */
     .table-scroll{display:none;}
     .card-list{display:block;}
     .card-sort-row{display:flex;}
@@ -278,12 +309,23 @@
 </style>
 </head>
 <body>
+
+<!-- Вікно пароля -->
+<div id="authModal">
+  <div class="auth-box">
+    <h2>Вхід у систему</h2>
+    <p>Введіть пароль для доступу до залишків:</p>
+    <input type="password" id="authPassword" placeholder="Введіть пароль">
+    <button id="authBtn">Підтвердити</button>
+    <div class="auth-error" id="authError">Невірний пароль!</div>
+  </div>
+</div>
+
 <div class="wrap">
 
   <header>
     <div class="title-block">
       <p class="eyebrow">Зведена відомість · вантажний журнал</p>
-
       <h1>Залишки на складах</h1>
     </div>
     <div class="stamp">
@@ -334,6 +376,7 @@
       <div class="cell"><div class="num" id="tSkus">0</div><div class="lbl">Позицій</div></div>
       <div class="cell"><div class="num" id="tWarehouses">0</div><div class="lbl">Складів</div></div>
       <div class="cell"><div class="num" id="tTotal">0</div><div class="lbl">Одиниць разом</div></div>
+      <div class="cell"><div class="num" id="tTotalSum">0 ₴</div><div class="lbl">Сума залишків</div></div>
       <div class="cell"><div class="num" id="tZero">0</div><div class="lbl">Немає хоч на 1 складі</div></div>
     </div>
 
@@ -343,10 +386,21 @@
     </div>
 
     <div class="controls">
-      <div class="group-filter" id="groupFilterWrap" style="display:none;">
-        <span class="tg-label">Група</span>
-        <select id="groupFilterSelect"></select>
+      <div class="controls-left">
+        <div class="group-filter" id="groupFilterWrap" style="display:none;">
+          <span class="tg-label">Група</span>
+          <select id="groupFilterSelect"></select>
+        </div>
+
+        <!-- Фільтр перепаду цін -->
+        <div class="diff-filter-wrap" id="diffFilterWrap" title="Показати препарати з різницею цін між складами">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);">РІЗНИЦЯ ЦІН:</span>
+          <input type="number" id="diffPercentInput" value="20" min="1" max="500">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);">%</span>
+          <button id="diffFilterBtn">Фільтрувати</button>
+        </div>
       </div>
+
       <button id="resetFile">Почати заново</button>
     </div>
 
@@ -379,36 +433,59 @@
 
   </div>
 
-  <footer>СТАТИЧНА СТОРІНКА · БЕЗ СЕРВЕРА · CSV → БРАУЗЕР</footer>
+  <footer>СТАТИЧНА СТОРІНКА · ЗАХИЩЕНО ПАРОЛЕМ · CSV → БРАУЗЕР</footer>
 </div>
 
 <script>
 (function(){
   // ==========================================================================
-  // ДЖЕРЕЛА ДАНИХ У МЕРЕЖІ — заповніть цей масив, щоб сторінка сама підвантажувала
-  // дані по кожному складу з опублікованих Google Таблиць (без ручного завантаження).
-  //
-  // ЯК ОТРИМАТИ ПОСИЛАННЯ:
-  // 1. Вставте CSV кожного складу на окрему вкладку однієї Google Таблиці
-  //    (або в окремі таблиці — не важливо).
-  // 2. Файл → Поділитися → Опублікувати в Інтернеті.
-  // 3. Оберіть конкретну вкладку (не "Весь документ") і формат "Значення, розділені комами (.csv)".
-  // 4. Натисніть "Опублікувати", скопіюйте посилання — воно виглядає приблизно так:
-  //    https://docs.google.com/spreadsheets/d/e/2PACX-xxxxxxxx/pub?gid=0&single=true&output=csv
-  // 5. Вставте це посилання нижче для відповідного складу.
-  //
-  // Якщо залишити масив порожнім — сторінка працює як раніше: лише ручне
-  // перетягування CSV-файлів, без автопідвантаження.
+  // НАЛАШТУВАННЯ ПАРОЛЯ
   // ==========================================================================
+  const APP_PASSWORD = '1234'; // Змініть на власний надійний пароль
+
   const REMOTE_SOURCES = [
     { label: 'Google Таблиця (всі склади)', url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTExpPCquUsNU9S917JXUemxatRSJFQ4rtihcr9C_BqxQyt0dvInY9kEcvksY4gv8lIBAIgr2R8kdUh/pub?gid=1566953783&single=true&output=csv' },
   ];
-  // Google Таблиці завжди публікують CSV у UTF-8 — окреме кодування для локальних
-  // файлів (Windows-1251) тут не потрібне.
   const REMOTE_ENCODING = 'utf-8';
 
-  // Колонки, які ніколи не показуються і не пропонуються до вибору
-  const BLOCKLIST_RAW = ['цена','сумма','статус','кодтовара','уктзед','рецепт','ценаприход','цінаприхід'];
+  const BLOCKLIST_RAW = ['сумма','статус','кодтовара','уктзед','рецепт','ценаприход','цінаприхід'];
+
+  // Елементи аутентифікації
+  const authModal = document.getElementById('authModal');
+  const authPassword = document.getElementById('authPassword');
+  const authBtn = document.getElementById('authBtn');
+  const authError = document.getElementById('authError');
+
+  // Перевірка сесії пароля
+  let isAuthenticated = sessionStorage.getItem('stock_app_auth') === '1';
+
+  function checkAuth(){
+    if(!APP_PASSWORD){
+      authModal.style.display = 'none';
+      return true;
+    }
+    if(isAuthenticated){
+      authModal.style.display = 'none';
+      return true;
+    }
+    authModal.style.display = 'flex';
+    return false;
+  }
+
+  function handleLogin(){
+    if(authPassword.value === APP_PASSWORD){
+      isAuthenticated = true;
+      sessionStorage.setItem('stock_app_auth', '1');
+      authModal.style.display = 'none';
+      authError.style.display = 'none';
+      if(REMOTE_SOURCES.length) processAllFiles();
+    } else {
+      authError.style.display = 'block';
+    }
+  }
+
+  authBtn.addEventListener('click', handleLogin);
+  authPassword.addEventListener('keydown', e=>{ if(e.key==='Enter') handleLogin(); });
 
   const dropzone = document.getElementById('dropzone');
   const fileInput = document.getElementById('fileInput');
@@ -433,42 +510,50 @@
   const refreshRemoteBtn = document.getElementById('refreshRemoteBtn');
   const remoteWarning = document.getElementById('remoteWarning');
   const encodingSelect = document.getElementById('encodingSelect');
+  const diffPercentInput = document.getElementById('diffPercentInput');
+  const diffFilterBtn = document.getElementById('diffFilterBtn');
 
-  let loadedFiles = [];      // [{file, name}]
+  let loadedFiles = [];
   let rawRows = [];
   let rawFields = [];
   let colMap = { name:null, sku:null, warehouse:null, qty:null };
-  let extraFields = [];      // candidate extra field names (not blocklisted, not core)
+  let extraFields = [];
   let activeExtraFields = new Set();
   let pivot = { products:[], warehouses:[] };
   let activeWarehouses = new Set();
   let sortState = { key:'name', dir:1 };
   let mapped = false;
+  let isDiffFilterActive = false;
 
   function normKey(s){
     return (s||'').toString().toLowerCase().replace(/[^а-яїієґa-z0-9]/gi,'');
   }
   function norm(s){ return (s||'').toString().toLowerCase().trim(); }
   function clean(s){ return (s||'').toString().replace(/"/g, '').trim(); }
+  function round2(n){
+    if(typeof n !== 'number' || isNaN(n)) return n;
+    return Math.round((n + Number.EPSILON) * 100) / 100;
+  }
   function round3(n){
-    // Прибирає "хвости" від помилок округлення float (0.1+0.2 -> 0.30000000000000004)
-    // при підсумовуванні дробових кількостей з різних рядків/файлів.
     if(typeof n !== 'number' || isNaN(n)) return n;
     return Math.round((n + Number.EPSILON) * 1000) / 1000;
   }
   function toNumber(s){
     if(s === undefined || s === null || s === '') return null;
     const str = s.toString().trim();
-    // Багатозначні поля (штрихкоди через ", ") не повинні сприйматись як число —
-    // інакше вони "розберуться" в беззмістовне число замість тексту.
     if(str.includes(' ')) return null;
     const v = parseFloat(str.replace(',', '.').replace(/[^\d.\-]/g,''));
     return isNaN(v) ? null : v;
   }
+  function parsePrice(s){
+    if(!s) return 0;
+    const v = parseFloat(s.toString().replace(',', '.').replace(/[^\d.]/g, ''));
+    return isNaN(v) ? 0 : v;
+  }
+  function formatMoney(num){
+    return (num || 0).toLocaleString('uk-UA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
   function formatMulti(s){
-    // Поля на кшталт "Штрихкоды" часто містять кілька значень через кому без пробілу
-    // (4820135261772,4820019391076,...) — без пробілу браузер не може перенести рядок.
-    // Розбиваємо і зводимо до "код, код, код", щоб з'явились точки переносу.
     const v = clean(s);
     if(!v.includes(',')) return v;
     return v.split(',').map(x=>x.trim()).filter(Boolean).join(', ');
@@ -491,7 +576,9 @@
     fileInput.value = '';
   });
   addMoreBtn.addEventListener('click', ()=>fileInput.click());
-  refreshRemoteBtn.addEventListener('click', ()=>processAllFiles());
+  refreshRemoteBtn.addEventListener('click', ()=>{
+    if(checkAuth()) processAllFiles();
+  });
   encodingSelect.addEventListener('change', ()=>{ if(loadedFiles.length) processAllFiles(); });
 
   resetFileBtn.addEventListener('click', ()=>{
@@ -503,6 +590,15 @@
     dropzone.style.display = 'block';
     addMoreBtn.style.display = 'none';
     renderFileList();
+  });
+
+  diffFilterBtn.addEventListener('click', ()=>{
+    isDiffFilterActive = !isDiffFilterActive;
+    diffFilterBtn.classList.toggle('active', isDiffFilterActive);
+    render();
+  });
+  diffPercentInput.addEventListener('input', ()=>{
+    if(isDiffFilterActive) render();
   });
 
   function addFiles(fileArr){
@@ -558,19 +654,11 @@
     return new TextDecoder(source.encoding || REMOTE_ENCODING).decode(buf);
   }
 
-  // Локальні Win-1251 файли (вивантаження з аптечної системи) інколи містять биту,
-  // незакриту лапку в значеннях (напр. виробник "Bayer" AG) — це ламає стандартний
-  // CSV-парсер із лапками-як-екранування, тож для ЛОКАЛЬНИХ файлів лапки вимкнено.
-  //
-  // Google Таблиці, навпаки, роблять CSV правильно за стандартом: якщо в значенні є
-  // кома (наприклад, у назві товару "..., пилочка, ...") — усе значення береться в
-  // лапки. Якщо тут теж вимкнути обробку лапок — такі поля розвалюються на кілька
-  // колонок і вся решта рядка зсувається. Тому для МЕРЕЖЕВИХ джерел лапки лишаються
-  // стандартними.
   const LOCAL_PARSE_OPTS  = { header:true, skipEmptyLines:true, quoteChar:'\u0000' };
   const REMOTE_PARSE_OPTS = { header:true, skipEmptyLines:true };
 
   async function processAllFiles(){
+    if(!checkAuth()) return;
     if(!loadedFiles.length && !REMOTE_SOURCES.length) return;
     const encoding = encodingSelect.value;
     let allRows = [];
@@ -616,16 +704,12 @@
 
     if(remoteErrors.length){
       remoteWarning.style.display = 'block';
-      // "Failed to fetch" ховає справжню причину. Найчастіша причина саме цієї помилки —
-      // сторінку відкрито прямо з диска (file://), а браузери з міркувань безпеки не
-      // дозволяють fetch() до зовнішніх сайтів із локально відкритих файлів.
       const isLocalFile = location.protocol === 'file:';
       let msg = 'Не вдалось завантажити частину джерел:<br>' +
         remoteErrors.map(e=>'• ' + escapeHtml(e)).join('<br>');
       if(isLocalFile){
-        msg += '<br><br><b>Ймовірна причина:</b> сторінка відкрита прямо з диска (адреса починається на file://). ' +
-          'Браузери блокують запити до зовнішніх сайтів із локально відкритих файлів. ' +
-          'Розмістіть цей HTML-файл на хостингу (GitHub Pages тощо) і відкривайте його вже звідти — тоді підвантаження запрацює.';
+        msg += '<br><br><b>Ймовірна причина:</b> сторінка відкрита прямо з диска (file://). ' +
+          'Розмістіть HTML-файл на хостингу (GitHub Pages тощо), щоб увімкнути завантаження.';
       } else {
         msg += '<br><br>Перевірте, що посилання опубліковане саме як CSV і доступне "будь-кому за посиланням".';
       }
@@ -653,7 +737,6 @@
         showMapper(guess);
       }
     } else {
-      // re-validate mapped columns still exist
       if(rawFields.includes(colMap.name) && rawFields.includes(colMap.warehouse) && rawFields.includes(colMap.qty)){
         finish();
       } else {
@@ -710,19 +793,12 @@
     finish();
   });
 
-  // Ці колонки за замовчуванням вимкнені (але лишаються доступними чіпами) —
-  // не критичні для щоденного перегляду залишків, лише захаращують таблицю.
   const DEFAULT_OFF_EXTRAS = ['группа','група','виробник','производитель'];
-  // Підказки для автоматичного пошуку колонки роздрібної ціни — щоб показувати її
-  // окремо для кожного складу (адже вона може відрізнятись між складами), а не
-  // брати значення з першого-ліпшого рядка.
-  const PRICE_HINTS = ['цінароздріб','ценароздроб','роздрібна','розничная','retail'];
+  const PRICE_HINTS = ['цінароздріб','ценароздроб','роздрібна','розничная','retail','ціна','цена'];
   let priceField = null;
-  // Підказки для автоматичного пошуку колонки товарної групи/категорії — щоб
-  // побудувати з неї окремий фільтр (обрати "Безрецептурні" і бачити тільки їх).
   const GROUP_HINTS = ['группа','група','категория','категорія','group'];
   let groupField = null;
-  let activeGroupFilter = ''; // '' = усі групи
+  let activeGroupFilter = '';
 
   function finish(){
     extraFields = rawFields.filter(f=> f!==colMap.name && f!==colMap.sku && f!==colMap.warehouse && f!==colMap.qty);
@@ -737,8 +813,6 @@
     app.classList.add('visible');
     document.getElementById('updatedAt').textContent =
       new Date().toLocaleString('uk-UA', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
-    // Панель завантаження займає чверть екрана і після успішного завантаження вже не
-    // потрібна на видноті — згортаємо, але вона лишається доступною одним кліком.
     uploadPanel.open = false;
     renderWarehouseToggle();
     renderExtraToggle();
@@ -754,9 +828,6 @@
       const name = clean(row[colMap.name]);
       if(!name) return;
       const whRaw = clean(row[colMap.warehouse]);
-      // Пропускаємо рядки-дублі заголовка — коли серед самих даних випадково опинився
-      // повторний рядок з назвами колонок (напр. "Товар" у полі товару, "Склад" у полі
-      // складу). Таке трапляється при склеюванні кількох вкладок/експортів в один файл.
       if(name === colMap.name && whRaw === colMap.warehouse) return;
       const sku = colMap.sku ? formatMulti(row[colMap.sku]) : '';
       const wh = whRaw || 'Без назви';
@@ -860,20 +931,48 @@
     const activeWh = pivot.warehouses.filter(w=>activeWarehouses.has(w));
     const activeExtras = extraFields.filter(f=>activeExtraFields.has(f));
     const q = norm(searchBox.value);
+    const targetDiffPercent = parseFloat(diffPercentInput.value) || 0;
 
     let rows = pivot.products.filter(p=>{
       if(groupField && activeGroupFilter && p.extras[groupField] !== activeGroupFilter) return false;
-      if(!q) return true;
-      if(norm(p.name).includes(q) || norm(p.sku).includes(q)) return true;
-      return Object.values(p.extras).some(v=>norm(v).includes(q));
+      if(q){
+        const matchName = norm(p.name).includes(q);
+        const matchSku = norm(p.sku).includes(q);
+        const matchExtras = Object.values(p.extras).some(v=>norm(v).includes(q));
+        if(!matchName && !matchSku && !matchExtras) return false;
+      }
+
+      // Розрахунок різниці цін між складами
+      if(isDiffFilterActive && priceField){
+        const prices = activeWh
+          .map(w => parsePrice(p.priceByWh[w]))
+          .filter(pr => pr > 0);
+
+        if(prices.length < 2) return false; // Потрібно хоча б 2 склади з цінами
+        const minP = Math.min(...prices);
+        const maxP = Math.max(...prices);
+        if(minP <= 0) return false;
+        const diffPercent = ((maxP - minP) / minP) * 100;
+        if(diffPercent < targetDiffPercent) return false;
+      }
+
+      return true;
     }).map(p=>{
       const total = round3(activeWh.reduce((s,w)=> s + (p.qtyByWh[w]||0), 0));
-      return {...p, total};
+      
+      // Розрахунок загальної суми вартості по всіх складах
+      let totalSum = 0;
+      activeWh.forEach(w=>{
+        const q = p.qtyByWh[w] || 0;
+        const price = parsePrice(p.priceByWh[w]);
+        totalSum += (q * price);
+      });
+      totalSum = round2(totalSum);
+
+      return {...p, total, totalSum};
     });
 
-    // Якщо поточний ключ сортування більше не існує (напр. вимкнули той самий склад,
-    // яким сортували) — повертаємось до сортування за назвою, а не тихо ламаємо порядок.
-    const validSortKeys = new Set(['name','total', ...(colMap.sku?['sku']:[]), ...activeExtras, ...activeWh]);
+    const validSortKeys = new Set(['name','total','totalSum', ...(colMap.sku?['sku']:[]), ...activeExtras, ...activeWh]);
     if(!validSortKeys.has(sortState.key)) sortState.key = 'name';
 
     rows.sort((a,b)=>{
@@ -881,9 +980,8 @@
       if(sortState.key === 'name') r = a.name.localeCompare(b.name,'uk');
       else if(sortState.key === 'sku') r = (a.sku||'').localeCompare(b.sku||'','uk');
       else if(sortState.key === 'total') r = a.total - b.total;
+      else if(sortState.key === 'totalSum') r = a.totalSum - b.totalSum;
       else if(activeExtras.includes(sortState.key)){
-        // Якщо значення в колонці схоже на число (напр. ціна "154.55") — сортуємо як
-        // число, інакше рядки на кшталт "800" опиняються "менше" за "9" за алфавітом.
         const av = toNumber(a.extras[sortState.key]);
         const bv = toNumber(b.extras[sortState.key]);
         if(av !== null && bv !== null) r = av - bv;
@@ -893,6 +991,7 @@
       return r * sortState.dir;
     });
 
+    // Формування заголовків таблиці
     let headHtml = `<th data-key="name">Товар <span class="arrow">${arrow('name')}</span></th>`;
     if(colMap.sku) headHtml += `<th data-key="sku">Код <span class="arrow">${arrow('sku')}</span></th>`;
     activeExtras.forEach(f=>{
@@ -901,8 +1000,10 @@
     activeWh.forEach(w=>{
       headHtml += `<th class="num-col" data-key="${escapeHtml(w)}">${escapeHtml(w)} <span class="arrow">${arrow(w)}</span></th>`;
     });
-    headHtml += `<th class="num-col" data-key="total">Разом <span class="arrow">${arrow('total')}</span></th>`;
+    headHtml += `<th class="num-col" data-key="total">Разом, шт <span class="arrow">${arrow('total')}</span></th>`;
+    headHtml += `<th class="num-col" data-key="totalSum">Сума разом, ₴ <span class="arrow">${arrow('totalSum')}</span></th>`;
     tableHead.innerHTML = headHtml;
+
     tableHead.querySelectorAll('th').forEach(th=>{
       th.addEventListener('click', ()=>{
         const key = th.dataset.key;
@@ -927,15 +1028,15 @@
         activeWh.forEach(w=>{
           const v = p.qtyByWh[w];
           const display = (v===undefined) ? '—' : v;
-          const priceHtml = (priceField && p.priceByWh[w]) ? `<span class="price-tag">(${escapeHtml(p.priceByWh[w])})</span>` : '';
+          const priceHtml = (priceField && p.priceByWh[w]) ? `<span class="price-tag">(${escapeHtml(p.priceByWh[w])} ₴)</span>` : '';
           tds += `<td><span class="qty ${qtyClass(v)}">${display}</span>${priceHtml}</td>`;
         });
         tds += `<td class="total-col"><span class="qty ${qtyClass(p.total)}">${p.total}</span></td>`;
+        tds += `<td class="sum-col" style="text-align:right;font-family:'IBM Plex Mono',monospace;">${formatMoney(p.totalSum)} ₴</td>`;
         return `<tr>${tds}</tr>`;
       }).join('');
 
-      // ---- Картковий вигляд (мобільний): та сама відсортована/відфільтрована `rows`,
-      // просто інша розмітка — склади один під одним замість колонок убік.
+      // Картковий вигляд (мобільні екрани)
       cardList.innerHTML = rows.map(p=>{
         let metaHtml = '';
         if(colMap.sku) metaHtml += `<span>Код: ${escapeHtml(p.sku)}</span>`;
@@ -946,7 +1047,7 @@
         const whRowsHtml = activeWh.map(w=>{
           const v = p.qtyByWh[w];
           const display = (v===undefined) ? '—' : v;
-          const priceHtml = (priceField && p.priceByWh[w]) ? `<span class="price-tag">(${escapeHtml(p.priceByWh[w])})</span>` : '';
+          const priceHtml = (priceField && p.priceByWh[w]) ? `<span class="price-tag">(${escapeHtml(p.priceByWh[w])} ₴)</span>` : '';
           return `<div class="stock-card-wh-row">
             <span class="wh-name">${escapeHtml(w)}</span>
             <span><span class="qty ${qtyClass(v)}">${display}</span>${priceHtml}</span>
@@ -957,17 +1058,21 @@
           <div class="stock-card-name">${escapeHtml(p.name)}</div>
           ${metaHtml ? `<div class="stock-card-meta">${metaHtml}</div>` : ''}
           <div class="stock-card-wh-list">${whRowsHtml}</div>
-          <div class="stock-card-total"><span>Разом</span><span class="qty ${qtyClass(p.total)}">${p.total}</span></div>
+          <div class="stock-card-total">
+            <span>Разом: <span class="qty ${qtyClass(p.total)}">${p.total} шт</span></span>
+            <span style="font-family:'IBM Plex Mono',monospace;color:var(--green);">${formatMoney(p.totalSum)} ₴</span>
+          </div>
         </div>`;
       }).join('');
     }
 
-    // ---- Наповнення селекта сортування для карткового режиму ----
+    // Оновлення сортувальника в мобільному режимі
     const sortOptions = [{key:'name', label:'Назва'}];
     if(colMap.sku) sortOptions.push({key:'sku', label:'Код'});
     activeExtras.forEach(f=> sortOptions.push({key:f, label:f}));
     activeWh.forEach(w=> sortOptions.push({key:w, label:'Склад: ' + w}));
-    sortOptions.push({key:'total', label:'Разом'});
+    sortOptions.push({key:'total', label:'Разом (кількість)'});
+    sortOptions.push({key:'totalSum', label:'Сума разом (₴)'});
     sortSelect.innerHTML = sortOptions.map(o=>
       `<option value="${escapeHtml(o.key)}"${o.key===sortState.key?' selected':''}>${escapeHtml(o.label)}</option>`
     ).join('');
@@ -977,10 +1082,10 @@
     document.getElementById('tWarehouses').textContent = pivot.warehouses.length;
     const grandTotal = round3(pivot.products.reduce((s,p)=> s + Object.values(p.qtyByWh).reduce((a,b)=>a+b,0), 0));
     document.getElementById('tTotal').textContent = grandTotal;
-    // "Немає в наявності" тут означає: позиція відсутня (0 або немає рядка) хоча б на
-    // одному з поточно увімкнених складів. Рахувати товари з нульовим залишком одразу
-    // на ВСІХ складах немає сенсу, якщо у вихідних CSV присутні лише позиції, які фактично
-    // є в наявності — таких рядків там просто не буває.
+
+    const grandSum = round2(rows.reduce((s,p)=> s + (p.totalSum || 0), 0));
+    document.getElementById('tTotalSum').textContent = formatMoney(grandSum) + ' ₴';
+
     const zeroCount = rows.filter(p=>{
       return activeWh.some(w=> !(p.qtyByWh[w] > 0));
     }).length;
@@ -992,8 +1097,8 @@
     return sortState.dir === 1 ? '↑' : '↓';
   }
 
-  // ---- автопідвантаження з мережі при відкритті сторінки ----
-  if(REMOTE_SOURCES.length){
+  // Перевірка паролю на старті
+  if(checkAuth() && REMOTE_SOURCES.length){
     processAllFiles();
   }
 
