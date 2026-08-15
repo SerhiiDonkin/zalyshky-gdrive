@@ -59,8 +59,23 @@
   .ticker .lbl{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-top:6px;}
 
   /* ---- Upload zone ---- */
+  /* ---- Панель завантаження (details/summary — згортається нативно) ---- */
+  #uploadPanel{
+    border:1px solid var(--line);background:var(--surface);margin-bottom:16px;
+  }
+  #uploadPanel summary{
+    list-style:none;cursor:pointer;padding:12px 16px;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--ink-soft);display:flex;align-items:center;gap:8px;user-select:none;
+  }
+  #uploadPanel summary::-webkit-details-marker{display:none;}
+  #uploadPanel summary::before{content:'▸';display:inline-block;transition:transform .15s;color:var(--stamp);}
+  #uploadPanel[open] summary::before{transform:rotate(90deg);}
+  #uploadPanel summary:hover{color:var(--ink);background:#FBF9F4;}
+  .upload-panel-body{padding:0 16px 16px;}
+
   #dropzone{
-    border:2px dashed var(--line);background:var(--surface);
+    border:2px dashed var(--line);background:var(--paper);
     padding:30px 20px;text-align:center;cursor:pointer;
     transition:border-color .15s, background .15s;margin-bottom:14px;
   }
@@ -98,12 +113,28 @@
   .app{display:none;}
   .app.visible{display:block;}
 
-  .controls{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
-  #searchBox{
-    flex:1;min-width:220px;border:1px solid var(--line);background:var(--surface);
-    padding:10px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;outline:none;
+  /* Пошук — окремий, візуально виразний рядок (щоб не зливався з кнопками/чіпами) */
+  .search-row{
+    position:relative;margin-bottom:14px;
   }
-  #searchBox:focus{border-color:var(--blue);}
+  .search-icon{
+    position:absolute;left:14px;top:50%;transform:translateY(-50%);
+    font-size:15px;opacity:.55;pointer-events:none;
+  }
+  #searchBox{
+    width:100%;border:1.5px solid var(--ink);background:var(--surface);
+    padding:12px 14px 12px 40px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;outline:none;
+    box-shadow:2px 2px 0 var(--line);
+  }
+  #searchBox:focus{border-color:var(--blue);box-shadow:2px 2px 0 var(--blue-soft);}
+  #searchBox::placeholder{color:var(--ink-soft);}
+
+  .controls{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:12px;justify-content:space-between;}
+  .group-filter{display:flex;align-items:center;gap:8px;}
+  .group-filter select{
+    font-family:'IBM Plex Sans',sans-serif;font-size:13px;padding:8px 10px;
+    border:1px solid var(--line);background:var(--surface);color:var(--ink);max-width:280px;
+  }
   #resetFile{
     font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-soft);
     background:none;border:1px solid var(--line);padding:9px 12px;cursor:pointer;
@@ -256,31 +287,36 @@
       <h1>Залишки на складах</h1>
     </div>
     <div class="stamp">
-      ОНОВЛЕНО: <b id="updatedAt">—</b><br>
+      СТОРІНКА ОНОВЛЕНА: <b id="updatedAt">—</b><br>
       ФАЙЛІВ ЗАВАНТАЖЕНО: <b id="fileCount">0</b>
     </div>
   </header>
 
-  <div id="dropzone">
-    <div class="dz-title">Перетягніть один або кілька CSV-файлів сюди, або натисніть, щоб обрати</div>
-    <div class="dz-sub">Обробка повністю у браузері, файли нікуди не завантажуються</div>
-    <input type="file" id="fileInput" accept=".csv" multiple>
-  </div>
+  <details id="uploadPanel" open>
+    <summary>Завантаження CSV-файлів</summary>
+    <div class="upload-panel-body">
+      <div id="dropzone">
+        <div class="dz-title">Перетягніть один або кілька CSV-файлів сюди, або натисніть, щоб обрати</div>
+        <div class="dz-sub">Обробка повністю у браузері, файли нікуди не завантажуються</div>
+        <input type="file" id="fileInput" accept=".csv" multiple>
+      </div>
 
-  <div class="upload-row">
-    <div class="enc-select">
-      Кодування (для локальних файлів):
-      <select id="encodingSelect">
-        <option value="windows-1251" selected>Windows-1251</option>
-        <option value="utf-8">UTF-8</option>
-      </select>
+      <div class="upload-row">
+        <div class="enc-select">
+          Кодування (для локальних файлів):
+          <select id="encodingSelect">
+            <option value="windows-1251" selected>Windows-1251</option>
+            <option value="utf-8">UTF-8</option>
+          </select>
+        </div>
+        <div id="fileList"></div>
+        <button id="addMoreBtn" style="display:none;">+ Додати ще файли</button>
+        <button id="refreshRemoteBtn" style="display:none;">↻ Оновити дані з мережі</button>
+      </div>
+
+      <div id="remoteWarning" style="display:none;"></div>
     </div>
-    <div id="fileList"></div>
-    <button id="addMoreBtn" style="display:none;">+ Додати ще файли</button>
-    <button id="refreshRemoteBtn" style="display:none;">↻ Оновити дані з мережі</button>
-  </div>
-
-  <div id="remoteWarning" style="display:none;"></div>
+  </details>
 
   <div id="mapper">
     <h3>Перевірте відповідність колонок</h3>
@@ -301,8 +337,16 @@
       <div class="cell"><div class="num" id="tZero">0</div><div class="lbl">Немає хоч на 1 складі</div></div>
     </div>
 
-    <div class="controls">
+    <div class="search-row">
+      <span class="search-icon">🔍</span>
       <input type="text" id="searchBox" placeholder="Пошук за назвою, кодом або штрихкодом…">
+    </div>
+
+    <div class="controls">
+      <div class="group-filter" id="groupFilterWrap" style="display:none;">
+        <span class="tg-label">Група</span>
+        <select id="groupFilterSelect"></select>
+      </div>
       <button id="resetFile">Почати заново</button>
     </div>
 
@@ -374,6 +418,9 @@
   const whToggle = document.getElementById('whToggle');
   const extraToggle = document.getElementById('extraToggle');
   const extraGroup = document.getElementById('extraGroup');
+  const groupFilterWrap = document.getElementById('groupFilterWrap');
+  const groupFilterSelect = document.getElementById('groupFilterSelect');
+  const uploadPanel = document.getElementById('uploadPanel');
   const tableHead = document.getElementById('tableHead');
   const tableBody = document.getElementById('tableBody');
   const emptyState = document.getElementById('emptyState');
@@ -671,10 +718,16 @@
   // брати значення з першого-ліпшого рядка.
   const PRICE_HINTS = ['цінароздріб','ценароздроб','роздрібна','розничная','retail'];
   let priceField = null;
+  // Підказки для автоматичного пошуку колонки товарної групи/категорії — щоб
+  // побудувати з неї окремий фільтр (обрати "Безрецептурні" і бачити тільки їх).
+  const GROUP_HINTS = ['группа','група','категория','категорія','group'];
+  let groupField = null;
+  let activeGroupFilter = ''; // '' = усі групи
 
   function finish(){
     extraFields = rawFields.filter(f=> f!==colMap.name && f!==colMap.sku && f!==colMap.warehouse && f!==colMap.qty);
     priceField = extraFields.find(f=> PRICE_HINTS.some(h=> normKey(f).includes(h))) || null;
+    groupField = extraFields.find(f=> GROUP_HINTS.some(h=> normKey(f).includes(h))) || null;
     if(activeExtraFields.size === 0){
       activeExtraFields = new Set(extraFields.filter(f=> !DEFAULT_OFF_EXTRAS.includes(normKey(f))));
     } else {
@@ -684,8 +737,12 @@
     app.classList.add('visible');
     document.getElementById('updatedAt').textContent =
       new Date().toLocaleString('uk-UA', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    // Панель завантаження займає чверть екрана і після успішного завантаження вже не
+    // потрібна на видноті — згортаємо, але вона лишається доступною одним кліком.
+    uploadPanel.open = false;
     renderWarehouseToggle();
     renderExtraToggle();
+    renderGroupFilter();
     render();
   }
 
@@ -764,7 +821,23 @@
     });
   }
 
+  function renderGroupFilter(){
+    if(!groupField){ groupFilterWrap.style.display = 'none'; return; }
+    const values = Array.from(new Set(
+      pivot.products.map(p=>p.extras[groupField]).filter(Boolean)
+    )).sort((a,b)=>a.localeCompare(b,'uk'));
+    if(!values.length){ groupFilterWrap.style.display = 'none'; return; }
+    groupFilterWrap.style.display = 'flex';
+    if(!values.includes(activeGroupFilter)) activeGroupFilter = '';
+    groupFilterSelect.innerHTML = '<option value="">Всі групи</option>' +
+      values.map(v=>`<option value="${escapeHtml(v)}"${v===activeGroupFilter?' selected':''}>${escapeHtml(v)}</option>`).join('');
+  }
+
   searchBox.addEventListener('input', render);
+  groupFilterSelect.addEventListener('change', ()=>{
+    activeGroupFilter = groupFilterSelect.value;
+    render();
+  });
 
   sortSelect.addEventListener('change', ()=>{
     sortState.key = sortSelect.value;
@@ -789,6 +862,7 @@
     const q = norm(searchBox.value);
 
     let rows = pivot.products.filter(p=>{
+      if(groupField && activeGroupFilter && p.extras[groupField] !== activeGroupFilter) return false;
       if(!q) return true;
       if(norm(p.name).includes(q) || norm(p.sku).includes(q)) return true;
       return Object.values(p.extras).some(v=>norm(v).includes(q));
