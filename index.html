@@ -643,6 +643,32 @@
     return fields.find(f => f.trim().toLowerCase() === targetName.toLowerCase()) || null;
   }
 
+  // Заголовок колонки "Склад" інколи містить вбудовану дату оновлення для іншої
+  // програми, напр. "Склад 20-08-2026 10-00". Дані в самих рядках лишаються звичайним
+  // "Склад Бояны" тощо — це стосується лише ТЕКСТУ ЗАГОЛОВКА. Функція знаходить таку
+  // колонку (з датою чи без), повертає її справжню назву для обробки як звичайний
+  // "Склад", і окремо — розпізнану дату для показу нагорі сторінки.
+  const WAREHOUSE_DATE_RE = /^Склад\s+(\d{2})-(\d{2})-(\d{4})\s+(\d{2})-(\d{2})\s*$/i;
+
+  function findWarehouseColAndDate(fields){
+    const candidates = [];
+    fields.forEach(f=>{
+      const m = f.trim().match(WAREHOUSE_DATE_RE);
+      if(m){
+        const [, dd, mm, yyyy, hh, min] = m;
+        const dateObj = new Date(`${yyyy}-${mm}-${dd}T${hh}:${min}:00`);
+        candidates.push({ field:f, dateObj, label:`${dd}.${mm}.${yyyy}, ${hh}:${min}` });
+      }
+    });
+    if(candidates.length){
+      // якщо кілька файлів/джерел — беремо найновішу дату
+      candidates.sort((a,b)=> b.dateObj - a.dateObj);
+      return { colName: candidates[0].field, updatedLabel: candidates[0].label };
+    }
+    const exact = findColKey(fields, CORE_COLS.warehouse);
+    return { colName: exact || CORE_COLS.warehouse, updatedLabel: null };
+  }
+
   async function processAllFiles(){
     if(!checkAuth()) return;
     if(!loadedFiles.length && !REMOTE_SOURCES.length) return;
@@ -706,8 +732,9 @@
     rawRows = allRows;
     
     // Визначаємо точні назви колонок у файлі
+    const whInfo = findWarehouseColAndDate(fieldSet);
     actualCols = {
-      warehouse: findColKey(fieldSet, CORE_COLS.warehouse) || CORE_COLS.warehouse,
+      warehouse: whInfo.colName,
       name: findColKey(fieldSet, CORE_COLS.name) || CORE_COLS.name,
       sku: findColKey(fieldSet, CORE_COLS.sku) || CORE_COLS.sku,
       qty: findColKey(fieldSet, CORE_COLS.qty) || CORE_COLS.qty,
@@ -725,7 +752,10 @@
 
     buildPivot();
     app.classList.add('visible');
-    document.getElementById('updatedAt').textContent =
+    // Якщо в заголовку "Склад" знайдено вбудовану дату (з комірки A1 у Google Таблиці) —
+    // показуємо саме її, бо це реальний час оновлення ДАНИХ, а не час відкриття сторінки.
+    // Якщо дати нема — як і раніше, показуємо час відкриття сторінки (запасний варіант).
+    document.getElementById('updatedAt').textContent = whInfo.updatedLabel ||
       new Date().toLocaleString('uk-UA', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
     uploadPanel.open = false;
     renderWarehouseToggle();
